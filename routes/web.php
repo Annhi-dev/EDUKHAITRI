@@ -73,15 +73,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/create', [\App\Http\Controllers\Admin\ThongBaoController::class, 'create'])->name('create');
             Route::post('/', [\App\Http\Controllers\Admin\ThongBaoController::class, 'store'])->name('store');
         });
-        });
 
-        // ===== THÔNG BÁO ROUTES (Dùng chung) =====
-        Route::middleware('auth')->prefix('thong-bao')->name('thong_bao.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\ThongBaoController::class, 'index'])->name('index');
-        Route::get('/lay-moi', [\App\Http\Controllers\ThongBaoController::class, 'layMoi'])->name('lay_moi');
-        Route::patch('/{id}/doc', [\App\Http\Controllers\ThongBaoController::class, 'daDoc'])->name('doc');
-        Route::patch('/doc-tat-ca', [\App\Http\Controllers\ThongBaoController::class, 'docTatCa'])->name('doc_tat_ca');
-        });
         // Đánh giá chất lượng
         Route::prefix('danh-gia')->name('danh_gia.')->group(function() {
             Route::get('/', [\App\Http\Controllers\Admin\DanhGiaController::class, 'index'])->name('index');
@@ -93,6 +85,14 @@ Route::middleware('auth')->group(function () {
             Route::get('/hoc-vien', [\App\Http\Controllers\Admin\DanhGiaController::class, 'danhGiaHocVien'])->name('hoc_vien');
             Route::get('/khoa-hoc', [\App\Http\Controllers\Admin\DanhGiaController::class, 'danhGiaKhoaHoc'])->name('khoa_hoc');
         });
+    });
+
+    // ===== THÔNG BÁO ROUTES (Dùng chung) =====
+    Route::middleware('auth')->prefix('thong-bao')->name('thong_bao.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\ThongBaoController::class, 'index'])->name('index');
+        Route::get('/lay-moi', [\App\Http\Controllers\ThongBaoController::class, 'layMoi'])->name('lay_moi');
+        Route::patch('/{id}/doc', [\App\Http\Controllers\ThongBaoController::class, 'daDoc'])->name('doc');
+        Route::patch('/doc-tat-ca', [\App\Http\Controllers\ThongBaoController::class, 'docTatCa'])->name('doc_tat_ca');
     });
 
     // ===== GIẢNG VIÊN ROUTES =====
@@ -186,4 +186,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 

@@ -69,7 +69,7 @@
                             {{ $hv->hocVienProfile->truong_tot_nghiep ?? 'Chưa cập nhật' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                            {{ $hv->hocVienProfile->ngay_nhap_hoc ? \Carbon\Carbon::parse($hv->hocVienProfile->ngay_nhap_hoc)->format('d/m/Y') : 'N/A' }}
+                            {{ optional($hv->hocVienProfile)->ngay_nhap_hoc ? \Carbon\Carbon::parse($hv->hocVienProfile->ngay_nhap_hoc)->format('d/m/Y') : 'N/A' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @php

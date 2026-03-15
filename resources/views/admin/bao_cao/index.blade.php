@@ -100,7 +100,7 @@
             </div>
             <div class="mt-8 pt-8 border-t border-amber-900/10 flex items-center justify-between text-[10px] font-black uppercase tracking-tighter">
                 <span>HÀI LÒNG: 92%</span>
-                <a href="{{ route('admin.bao_cao.khoa_hoc') }}" class="px-2 py-1 bg-amber-900/10 rounded-lg underline">CHI TIẾT</a>
+                <a href="#" class="px-2 py-1 bg-amber-900/10 rounded-lg underline">CHI TIẾT</a>
             </div>
         </div>
     </div>

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class LichHoc extends Model
 {
+    protected $table = 'lich_hocs';
+
     protected $fillable = [
         'lop_hoc_id',
         'ngay_hoc',

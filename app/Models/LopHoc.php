@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class LopHoc extends Model
 {
+    protected $table = 'lop_hocs';
+
     protected $fillable = [
         'ma_lop',
         'ten_lop',

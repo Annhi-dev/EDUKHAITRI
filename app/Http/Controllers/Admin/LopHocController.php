@@ -52,7 +52,7 @@ class LopHocController extends Controller
             'giang_vien_id' => 'required|exists:users,id',
             'si_so_toi_da' => 'required|integer|min:1',
             'ngay_bat_dau' => 'required|date',
-            'ngay_ket_thuc' => 'nullable|date|after_or_equal:ngay_bat_dau',
+            'ngay_ket_thuc' => 'required|date|after:ngay_bat_dau',
             'phong_hoc' => 'nullable|string',
             'thu_trong_tuan' => 'required|array',
             'gio_bat_dau' => 'required',

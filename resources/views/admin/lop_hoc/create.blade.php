@@ -25,6 +25,19 @@
                     <input type="text" name="ma_lop" value="{{ old('ma_lop') }}" required placeholder="VD: L001" class="w-full rounded-lg border-gray-300">
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-gray-700">Thời lượng khóa học</label>
+                    <select id="thoi_luong" class="w-full rounded-lg border-gray-300 bg-purple-50">
+                        <option value="">Chọn thời lượng</option>
+                        <option value="1">1 Tháng</option>
+                        <option value="2">2 Tháng</option>
+                        <option value="3">3 Tháng</option>
+                        <option value="4">4 Tháng</option>
+                        <option value="5">5 Tháng</option>
+                        <option value="6">6 Tháng</option>
+                        <option value="12">12 Tháng (1 Năm)</option>
+                    </select>
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gray-700">Sĩ số tối đa</label>
                     <input type="number" name="si_so_toi_da" value="{{ old('si_so_toi_da', 30) }}" required class="w-full rounded-lg border-gray-300">
                 </div>
@@ -48,11 +61,11 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Ngày bắt đầu (*)</label>
-                    <input type="date" name="ngay_bat_dau" id="ngay_bat_dau" required class="w-full rounded-lg border-gray-300">
+                    <input type="date" name="ngay_bat_dau" id="ngay_bat_dau" value="{{ date('Y-m-d') }}" required class="w-full rounded-lg border-gray-300">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Ngày kết thúc (dự kiến)</label>
-                    <input type="date" name="ngay_ket_thuc" id="ngay_ket_thuc" class="w-full rounded-lg border-gray-300">
+                    <label class="block text-sm font-medium text-gray-700">Ngày kết thúc (*)</label>
+                    <input type="date" name="ngay_ket_thuc" id="ngay_ket_thuc" required class="w-full rounded-lg border-gray-300">
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-sm font-medium text-gray-700">Phòng học</label>
@@ -76,10 +89,20 @@
                         @endforeach
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700">Thời lượng mỗi buổi</label>
+                        <select id="thoi_luong_buoi" class="w-full rounded-lg border-gray-300 bg-indigo-50">
+                            <option value="">Tự chọn</option>
+                            <option value="45">45 phút (1 tiết)</option>
+                            <option value="90">90 phút (2 tiết)</option>
+                            <option value="120">120 phút (2 giờ)</option>
+                            <option value="180">180 phút (3 giờ)</option>
+                        </select>
+                    </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Giờ bắt đầu (*)</label>
-                        <input type="time" name="gio_bat_dau" id="gio_bat_dau" required class="w-full rounded-lg border-gray-300">
+                        <input type="time" name="gio_bat_dau" id="gio_bat_dau" value="07:30" required class="w-full rounded-lg border-gray-300">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Giờ kết thúc (*)</label>
@@ -116,10 +139,84 @@
 </div>
 
 <script>
+    const ngayBatDauInput = document.getElementById('ngay_bat_dau');
+    const ngayKetThucInput = document.getElementById('ngay_ket_thuc');
+    const thoiLuongSelect = document.getElementById('thoi_luong');
+    const gioBatDauInput = document.getElementById('gio_bat_dau');
+    const gioKetThucInput = document.getElementById('gio_ket_thuc');
+    const thoiLuongBuoiSelect = document.getElementById('thoi_luong_buoi');
+
+    // === Xử lý Ngày ===
+    function updateEndDate() {
+        const startDateVal = ngayBatDauInput.value;
+        const months = parseInt(thoiLuongSelect.value);
+        if (startDateVal && months) {
+            const date = new Date(startDateVal);
+            date.setMonth(date.getMonth() + months);
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            ngayKetThucInput.value = `${y}-${m}-${d}`;
+            validateDates();
+        }
+    }
+
+    function validateDates() {
+        const start = new Date(ngayBatDauInput.value);
+        const end = new Date(ngayKetThucInput.value);
+        if (ngayBatDauInput.value && ngayKetThucInput.value) {
+            if (end <= start) {
+                ngayKetThucInput.setCustomValidity('Ngày kết thúc phải lớn hơn ngày bắt đầu');
+                ngayKetThucInput.reportValidity();
+            } else {
+                ngayKetThucInput.setCustomValidity('');
+            }
+        }
+    }
+
+    // === Xử lý Giờ ===
+    function updateEndTime() {
+        const startTimeVal = gioBatDauInput.value;
+        const minutes = parseInt(thoiLuongBuoiSelect.value);
+        if (startTimeVal && minutes) {
+            const [hours, mins] = startTimeVal.split(':').map(Number);
+            const date = new Date();
+            date.setHours(hours, mins + minutes);
+            const h = String(date.getHours()).padStart(2, '0');
+            const m = String(date.getMinutes()).padStart(2, '0');
+            gioKetThucInput.value = `${h}:${m}`;
+            validateTimes();
+        }
+    }
+
+    function validateTimes() {
+        if (gioBatDauInput.value && gioKetThucInput.value) {
+            if (gioKetThucInput.value <= gioBatDauInput.value) {
+                gioKetThucInput.setCustomValidity('Giờ kết thúc phải sau giờ bắt đầu');
+                gioKetThucInput.reportValidity();
+            } else {
+                gioKetThucInput.setCustomValidity('');
+            }
+        }
+    }
+
+    // Listeners Ngày
+    ngayBatDauInput.addEventListener('change', () => {
+        if (thoiLuongSelect.value) updateEndDate();
+        else validateDates();
+    });
+    thoiLuongSelect.addEventListener('change', updateEndDate);
+    ngayKetThucInput.addEventListener('change', validateDates);
+
+    // Listeners Giờ
+    gioBatDauInput.addEventListener('change', () => {
+        if (thoiLuongBuoiSelect.value) updateEndTime();
+        else validateTimes();
+    });
+    thoiLuongBuoiSelect.addEventListener('change', updateEndTime);
+    gioKetThucInput.addEventListener('change', validateTimes);
+
     function previewSchedules() {
-        const form = document.getElementById('create-class-form');
-        const formData = new FormData(form);
-        
         const previewContent = document.getElementById('preview-content');
         previewContent.innerHTML = '<p class="text-center py-4 text-gray-500 italic">Đang tính toán lịch...</p>';
         document.getElementById('preview-modal').classList.remove('hidden');
@@ -131,8 +228,8 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                ngay_bat_dau: document.getElementById('ngay_bat_dau').value,
-                ngay_ket_thuc: document.getElementById('ngay_ket_thuc').value,
+                ngay_bat_dau: ngayBatDauInput.value,
+                ngay_ket_thuc: ngayKetThucInput.value,
                 thu_trong_tuan: Array.from(document.querySelectorAll('input[name="thu_trong_tuan[]"]:checked')).map(el => el.value)
             })
         })
@@ -147,7 +244,6 @@
                 html += `<tr><td class="p-2 border">${index + 1}</td><td class="p-2 border">${item.ngay}</td><td class="p-2 border">${item.thu}</td></tr>`;
             });
             html += '</tbody></table>';
-            html += `<p class="mt-2 text-xs text-gray-500 font-italic">* Chỉ hiển thị tối đa 50 buổi đầu tiên.</p>`;
             previewContent.innerHTML = html;
         });
     }
@@ -161,9 +257,7 @@
     input[type="checkbox"]:checked + span {
         color: #7c3aed;
         background-color: #f5f3ff;
-    }
-    input[type="checkbox"]:checked + span::before {
-        content: '✓ ';
+        border-color: #7c3aed;
     }
 </style>
 @endsection

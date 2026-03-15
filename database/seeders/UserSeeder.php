@@ -28,6 +28,12 @@ class UserSeeder extends Seeder
             'role' => 'giang_vien',
         ]);
         $gv->assignRole('giang_vien');
+        \App\Models\GiangVienProfile::create([
+            'user_id' => $gv->id,
+            'ma_giang_vien' => 'GV001',
+            'hoc_vi' => 'Thạc sĩ',
+            'chuyen_mon' => 'Công nghệ thông tin',
+        ]);
 
         $hv = User::create([
             'name' => 'Hoc Vien B',
@@ -36,5 +42,11 @@ class UserSeeder extends Seeder
             'role' => 'hoc_vien',
         ]);
         $hv->assignRole('hoc_vien');
+        \App\Models\HocVienProfile::create([
+            'user_id' => $hv->id,
+            'ma_hoc_vien' => 'HV001',
+            'ngay_nhap_hoc' => now(),
+            'trang_thai' => 'dang_hoc',
+        ]);
     }
 }
